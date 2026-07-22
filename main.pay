@@ -1,0 +1,41 @@
+import os
+from telegram import Update, ReplyKeyboardMarkup
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
+
+TOKEN = os.getenv("BOT_TOKEN", "8671641415:AAHscYIF7vVB-EEmCueje1wwDEkHlsTA3ZA")
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = [
+        ["🛠️ አገልግሎቶች ሳሪስ አደይ አበባ", "📞 ስልክ ቁጥር"],0918845007
+        0718845007
+        ["📍 አድራሻ"]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    
+    await update.message.reply_text(
+        "ሰላም! እንኳን ወደ Dani Electronics በደህና መጡ።\nከታች ባሉት አማራጮች ይጠቀሙ፡",
+        reply_markup=reply_markup
+    )
+
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text
+
+    if text == "🛠️ አገልግሎቶች":
+        response = "እኛ የምንሰጣቸው አገልግሎቶች፡\n• የቲቪ (TV) ጥገና\n• የሪሲቨር እና የኤሌክትሮኒክስ ዕቃዎች ጥገና"
+    elif text == "📞 ስልክ ቁጥር":
+        response = "📞 በነዚህ ቁጥሮች ይደውሉልን፡\n• 0918845007\n• 0718845007"
+    elif text == "📍 አድራሻ":
+        response = "📍 አድራሻችን፡ ሳሪስ፣ አዲስ አበባ"
+    else:
+        response = f"መልእክትዎ ደርሶናል፡- '{text}'\nበቅርቡ እንመልሳለን!"
+
+    await update.message.reply_text(response)
+
+if __name__ == '__main__':
+    app = ApplicationBuilder().token(TOKEN).build()
+    
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    
+    print("ቦቱ መስራት ጀምሯል...")
+    app.run_polling()
